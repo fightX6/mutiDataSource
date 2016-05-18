@@ -23,7 +23,7 @@
 		<property name="username" value="${dataSource.username3}" />
 		<property name="password" value="${dataSource.password3}" />
 		<property name="initialSize" value="${dataSource.initialSize}" />
-		<property name="minIdle" value="${dataSource.minIdle}" />
+		<property name="minIdle" value="${dataSource.minIdle}" /> 
 		<property name="maxActive" value="${dataSource.maxActive}" />
 		<property name="maxWait" value="${dataSource.maxWait}" />
 		<property name="timeBetweenEvictionRunsMillis" value="${dataSource.timeBetweenEvictionRunsMillis}" />

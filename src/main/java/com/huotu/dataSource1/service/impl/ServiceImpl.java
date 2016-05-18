@@ -13,9 +13,9 @@ import com.huotu.entity.data2.Demo;
 @org.springframework.stereotype.Service
 public class ServiceImpl implements Service{
 	@Resource
-	private Dao dao;
+	private Dao<Data1> dao;
 	@Resource
-	private Dao2 dao2;
+	private Dao2<Demo> dao2;
 	@Resource
 	private DaoMapper daoMapper;
 	public List<Data1> findById(int id) {

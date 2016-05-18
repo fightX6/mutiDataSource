@@ -90,8 +90,8 @@
 		<aop:pointcut expression="execution(* com.huotu.dataSource1.**.service.impl.*.*(..))" id="dataSource1-tx" />
 	    <aop:pointcut expression="execution(* com.huotu.dataSource2.**.service.impl.*.*(..))" id="dataSource2-tx"/>  
 	    <aop:pointcut expression="execution(* com.huotu.dataSource3.**.service.impl.*.*(..))" id="dataSource3-tx"/>
-	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource1-tx" />
-	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource2-tx"/>  
-	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource3-tx"/>   
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource1-tx"  id="advisor1"/>
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource2-tx"  id="advisor2"/>  
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource3-tx"  id="advisor3"/>   
 	</aop:config>
 </beans>

@@ -30,7 +30,7 @@ public class TestController {
 		data1.setName("data1");
 		service.save(data1);
 		demo.setName("demo");
-		demo.setValue("demo_value");
+		demo.setValue("demo_value"); 
 		data1.setName("data22222222");
 		service.save(data1, demo);
 		Value val = new Value();

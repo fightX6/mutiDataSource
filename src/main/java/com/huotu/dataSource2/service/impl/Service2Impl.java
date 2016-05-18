@@ -13,7 +13,7 @@ import com.huotu.entity.data2.Demo;
 @Service
 public class Service2Impl implements Service2{
 	@Resource
-	private Dao2 dao2;
+	private Dao2<Demo> dao2;
 	@Resource
 	private Dao2Mapper dao2Mapper;
 	@Override

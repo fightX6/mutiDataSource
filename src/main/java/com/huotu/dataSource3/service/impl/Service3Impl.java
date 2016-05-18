@@ -13,7 +13,7 @@ import com.huotu.entity.data3.Value;
 @Service
 public class Service3Impl implements Service3{
 	@Resource
-	private Dao3 dao3;
+	private Dao3<Value> dao3;
 	@Resource
 	private Dao3Mapper dao3Mapper;
 	@Override
