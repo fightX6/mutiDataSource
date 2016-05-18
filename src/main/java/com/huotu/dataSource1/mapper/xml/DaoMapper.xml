@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huotu.dataSource1.mapper.DaoMapper"  >
+	
+	<select id="findById" resultType="com.huotu.entity.data1.Data1"  >
+		select * from Data1 
+	</select>
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"  
+	xsi:schemaLocation="
+                    http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans.xsd
+                    http://www.springframework.org/schema/tx 
+                    http://www.springframework.org/schema/tx/spring-tx.xsd
+                    http://www.springframework.org/schema/aop 
+                    http://www.springframework.org/schema/aop/spring-aop.xsd
+                    http://www.springframework.org/schema/context      
+                    http://www.springframework.org/schema/context/spring-context.xsd ">
+	<!-- 1.Druid内置提供一个StatFilter，用于统计监控信息 -->
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<property name="mergeSql" value="true" />
+		<!-- StatFilter属性slowSqlMillis用来配置SQL慢的标准，执行时间超过slowSqlMillis的就是慢。slowSqlMillis的缺省值为3000，也就是3秒。配置中，slowSqlMillis被修改为10秒，并且通过日志输出执行慢的SQL -->
+		<property name="slowSqlMillis" value="10000" />
+		<property name="logSlowSql" value="true" />
+	</bean>
+	<!-- 2.Druid提供了Spring和Jdbc的关联监控。com.alibaba.druid.support.spring.stat.DruidStatInterceptor是一个标准的Spring 
+		MethodInterceptor。可以灵活进行AOP配置 -->
+	<bean id="druid-stat-interceptor"
+		class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor">
+	</bean>
+	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut"
+		scope="prototype">
+		<property name="patterns">
+			<list>
+				<value>com.huotu.*</value>
+			</list>
+		</property>
+	</bean>
+	<aop:config proxy-target-class="true">
+		<aop:advisor advice-ref="druid-stat-interceptor"
+			pointcut-ref="druid-stat-pointcut" />
+	</aop:config>
+	<!-- 3.防御SQL注入攻击 有时候，一些应用框架做了自己的JDBC Proxy Driver，是的DruidDataSource无法正确识别数据库的类型，则需要特别指定 
+		详情参阅：https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE-wallfilter -->
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter"></bean>
+	<!-- 4.Druid内置 缺省输出的日志信息 -->
+	<bean id="log-filter" class="com.alibaba.druid.filter.logging.Log4jFilter">
+	</bean>
+	
+	<!-- jpa定义 -->
+	<!-- 用于指定持久化实现JPA -->
+	<bean id="persistenceProvider" class="org.hibernate.ejb.HibernatePersistence" />
+	<!-- 用于指定一些高级特性 -->
+	<bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+	
+	
+	
+	
+	 <!-- atomikos事务管理器 -->  
+    <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"   
+        init-method="init" destroy-method="close">  
+        <property name="forceShutdown">  
+            <value>true</value>  
+        </property>  
+    </bean>  
+  
+    <bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">  
+        <property name="transactionTimeout" value="300" />  
+    </bean>  
+  
+    <!-- spring 事务管理器 -->  
+    <bean id="jtaTransactionManager"  
+        class="org.springframework.transaction.jta.JtaTransactionManager">  
+        <property name="transactionManager" ref="atomikosTransactionManager"/>  
+        <property name="userTransaction" ref="atomikosUserTransaction" />  
+        <property name="allowCustomIsolationLevels" value="true"/>   
+    </bean>  
+  
+  
+	<tx:advice id="txAdvice" transaction-manager="jtaTransactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="edit*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<aop:config> 
+		<aop:pointcut expression="execution(* com.huotu.dataSource1.**.service.impl.*.*(..))" id="dataSource1-tx" />
+	    <aop:pointcut expression="execution(* com.huotu.dataSource2.**.service.impl.*.*(..))" id="dataSource2-tx"/>  
+	    <aop:pointcut expression="execution(* com.huotu.dataSource3.**.service.impl.*.*(..))" id="dataSource3-tx"/>
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource1-tx" />
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource2-tx"/>  
+	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource3-tx"/>   
+	</aop:config>
+</beans>

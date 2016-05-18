@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+                    http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans.xsd
+                    http://www.springframework.org/schema/tx 
+                    http://www.springframework.org/schema/tx/spring-tx.xsd
+                    http://www.springframework.org/schema/aop 
+                    http://www.springframework.org/schema/aop/spring-aop.xsd
+                    http://www.springframework.org/schema/context      
+                    http://www.springframework.org/schema/context/spring-context.xsd
+        			http://www.springframework.org/schema/data/jpa 
+        			http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+	<!-- 数据源开始 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.xa.DruidXADataSource"
+		init-method="init" destroy-method="close">
+		<property name="name" value="${dataSource.name}" />
+		<property name="url" value="${dataSource.url}" />
+		<property name="username" value="${dataSource.username}" />
+		<property name="password" value="${dataSource.password}" />
+		<property name="initialSize" value="${dataSource.initialSize}" />
+		<property name="minIdle" value="${dataSource.minIdle}" />
+		<property name="maxActive" value="${dataSource.maxActive}" />
+		<property name="maxWait" value="${dataSource.maxWait}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${dataSource.timeBetweenEvictionRunsMillis}" />
+		<property name="minEvictableIdleTimeMillis" value="${dataSource.minEvictableIdleTimeMillis}" />
+		<property name="validationQuery" value="${dataSource.validationQuery}" />
+		<property name="testWhileIdle" value="${dataSource.testWhileIdle}" />
+		<property name="testOnBorrow" value="${dataSource.testOnBorrow}" />
+		<property name="testOnReturn" value="${dataSource.testOnReturn}" />
+		<property name="poolPreparedStatements" value="${dataSource.poolPreparedStatements}" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="${dataSource.maxPoolPreparedStatementPerConnectionSize}" />
+		<property name="useGlobalDataSourceStat" value="true" />
+		<property name="filters" value="log4j" />
+		<property name="proxyFilters">
+			<list>
+				<ref bean="stat-filter" />
+				<ref bean="wall-filter" />
+				<ref bean="log-filter" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 设置jta数据源 -->
+	<bean id="dataSourceXA" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">  
+	    	  <property name="xaDataSource" ref="dataSource" ></property>
+	    	  <property name="uniqueResourceName" value="xa1"/>
+	</bean> 
+	
+	<!-- 指定实现JPA的适配器 -->
+	<bean id="jpaVendorAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="database" value="MYSQL" />
+	</bean>
+	<!-- JPA实体管理器工厂 -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSourceXA" />
+		<property name="persistenceProvider" ref="persistenceProvider" />
+		<property name="jpaDialect" ref="jpaDialect" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">${jpa.dialect}</prop>
+				<prop key="hibernate.connection.driver.class">${jpa.connection.driver.class}</prop>
+				<prop key="hibernate.max.fetch.depth">${jpa.max.fetch.depth}</prop>
+				<prop key="hibernate.jdbc.fetch.size">${jpa.jdbc.fetch.size}</prop>
+				<prop key="hibernate.jdbc.batch.size">${jpa.jdbc.batch.size}</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">${jpa.hbm2ddl.auto}</prop> -->
+				<prop key="hibernate.show.sql">${jpa.show.sql}</prop>
+				<prop key="hibernate.format.sql">${jpa.format.sql}</prop>
+				<prop key="javax.persistence.validation.mode">${javax.persistence.validation.mode}</prop>
+			</props>
+		</property>
+		
+		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
+		<!-- 加载jpa实体类 -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.huotu.entity.data1</value>
+			</list>
+		</property>
+	</bean>
+		
+	 <!-- ，Spring能够通过base-package检测出指定路径下所有继承Repository或者其子接口的接口(有点绕口)。
+	 每找到一个接口的时候，FactoryBean就会创建一个合适的代理去处理以及 调用里面的查询方法。
+	 每个注册的Bean的名称都是源于接口名称，例如：UserRepository将会被注册为userRepository。
+	 base-package允许使用通配符作为扫描格式。使用过滤器 在默认的设置中，将使用全路径扫描的方式去检索接口，
+	 当然，你在业务上可能需要更细致的操作，这时候，你可以在<repositories>中使用<include-filter>或者<exclude-filter>。
+	 这样的话， 你可以指定扫描的路径包含或者不包含指定的路径 -->
+	<jpa:repositories base-package="com.huotu.dataSource1.**.dao"  transaction-manager-ref="jtaTransactionManager"/>
+	
+	<!-- 配置mybatis -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSourceXA" />
+		<!-- <property name="configLocation" value="classpath:config/mybatis-config.xml"></property> -->
+		<!-- <property name="typeAliasesPackage" value="com.cbcs.entity"></property> -->
+		<property name="mapperLocations"
+			value="classpath*:com/huotu/dataSource1/mapper/xml/*.xml"></property>
+	</bean>
+	<bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.huotu.dataSource1.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+ 
+</beans>
