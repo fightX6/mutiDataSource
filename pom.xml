@@ -17,7 +17,7 @@
 		<resteasy_versions>3.0.7.Final</resteasy_versions>
 		<spring_version>4.2.5.RELEASE</spring_version>
 		<spring_data_jpa_version>1.10.1.RELEASE</spring_data_jpa_version>
-		<jpa_version>5.1.0.Final</jpa_version>
+		<jpa_version>4.3.11.Final</jpa_version>
 		<druid_version>1.0.18</druid_version>
 		<cglib_version>3.2.2</cglib_version>
 		<freemarker_version>2.3.23</freemarker_version>
@@ -156,7 +156,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>${jpa_version}</version>
+			<version>5.2.4.Final</version>
 		</dependency>
 		<!-- hibernate end -->
 		<!-- mybatis start -->
@@ -323,7 +323,7 @@
 		<plugins><!-- <plugin> <groupId>org.apache.tomcat.maven</groupId> <artifactId>tomcat7-maven-plugin</artifactId> 
 				<version>2.2</version> </plugin> -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
+				<groupId>org.apache.maven.plugins</groupId> 
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${maven_war_plugin_version}</version>
 				<configuration>

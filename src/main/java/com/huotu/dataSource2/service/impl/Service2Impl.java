@@ -13,12 +13,12 @@ import com.huotu.entity.data2.Demo;
 @Service
 public class Service2Impl implements Service2{
 	@Resource
-	private Dao2<Demo> dao2;
+	private Dao2 dao2;
 	@Resource
 	private Dao2Mapper dao2Mapper;
 	@Override
-	public List<Demo> findById(int id) {
-		return dao2Mapper.findById();
+	public Demo findById(int id) {
+		return dao2.findOne(id);
 	}
 	@Override
 	public void save(Demo val) {

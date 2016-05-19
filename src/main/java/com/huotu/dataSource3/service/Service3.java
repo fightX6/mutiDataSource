@@ -7,5 +7,5 @@ import com.huotu.entity.data3.Value;
 public interface Service3 {
 
 	public void save(Value val);
-	public List<Value>  findById(int id );
+	public Value  findById(int id );
 }

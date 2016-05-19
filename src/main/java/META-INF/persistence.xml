@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-	<persistence-unit name="mutiDataSource">
-		<class>com.huotu.entity.data2.Demo</class>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="mutiDataSource" transaction-type="JTA">
 		<class>com.huotu.entity.data1.Data1</class>
+	</persistence-unit>
+	<persistence-unit name="mutiDataSource2" transaction-type="JTA">
+		<class>com.huotu.entity.data2.Demo</class>
+	</persistence-unit>
+	<persistence-unit name="mutiDataSource3" transaction-type="JTA">
 		<class>com.huotu.entity.data3.Value</class>
 	</persistence-unit>
 </persistence>

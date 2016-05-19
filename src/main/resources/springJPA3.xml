@@ -49,23 +49,26 @@
 	<bean id="dataSourceXA3" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">  
 	    	  <property name="xaDataSource" ref="dataSource3" ></property>
 	    	  <property name="uniqueResourceName" value="xa3"/>
+	    	  <property name="maxPoolSize" value="10"/>
+	    	  <property name="minPoolSize" value="1"/>
+	    	  <property name="reapTimeout" value="20000"/>
 	</bean> 
 	
 	<!-- 指定实现JPA的适配器 -->
 	<bean id="jpaVendorAdapter3"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 		<property name="database" value="MYSQL" />
+		<property name="showSql" value="true"/>
 	</bean>  
 	<!-- JPA实体管理器工厂 -->
 	<bean id="entityManagerFactory3"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="dataSourceXA3" />
+		<property name="jtaDataSource" ref="dataSourceXA3" />
 		<property name="persistenceProvider" ref="persistenceProvider" />
 		<property name="jpaDialect" ref="jpaDialect" />
 		<property name="jpaProperties"> 
 			<props>
 				<prop key="hibernate.dialect">${jpa.dialect3}</prop>
-				<prop key="hibernate.connection.driver.class">${jpa.connection.driver.class3}</prop>
 				<prop key="hibernate.max.fetch.depth">${jpa.max.fetch.depth}</prop>
 				<prop key="hibernate.jdbc.fetch.size">${jpa.jdbc.fetch.size}</prop>
 				<prop key="hibernate.jdbc.batch.size">${jpa.jdbc.batch.size}</prop>
@@ -73,19 +76,24 @@
 				<prop key="hibernate.show.sql">${jpa.show.sql}</prop>
 				<prop key="hibernate.format.sql">${jpa.format.sql}</prop>
 				<prop key="javax.persistence.validation.mode">${javax.persistence.validation.mode}</prop>
+                <prop key="hibernate.current_session_context_class">${jta.current_session_context_class3}</prop>  
+                <prop key="hibernate.transaction.factory_class">${jta.transaction.factory_class3}</prop>
+				<prop key="hibernate.connection.driver.class">${jta.connection.driver.class3}</prop>
+				<prop key="hibernate.transaction.jta.platform ">com.atomikos.icatch.jta.hibernate4.AtomikosJ2eePlatform.class</prop>
+				
 			</props>
 		</property>
 		
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapter3" />
 		<!-- 加载jpa实体类 -->
-		<property name="packagesToScan"  >
-			<list>
-				<value>com.huotu.entity.data3</value>
-			</list>
-		</property>
-	</bean>
+		<!-- <property name="packagesToScan" value="com.huotu.entity.data3"/> -->
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"/>
+		<property name="persistenceUnitName" value="mutiDataSource3"/>
+	</bean> 
 	
-	<jpa:repositories base-package="com.huotu.dataSource3.**.dao"  transaction-manager-ref="jtaTransactionManager"/>
+	<jpa:repositories base-package="com.huotu.dataSource3.dao"    
+			entity-manager-factory-ref="entityManagerFactory3"   
+			transaction-manager-ref="jtaTransactionManager"/>
 	
 	<!-- 配置mybatis -->
 	<bean id="sqlSessionFactory3" class="org.mybatis.spring.SqlSessionFactoryBean">

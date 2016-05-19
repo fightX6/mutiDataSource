@@ -51,7 +51,6 @@
 	
 	
 	
-	
 	 <!-- atomikos事务管理器 -->  
     <bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"   
         init-method="init" destroy-method="close">  
@@ -72,24 +71,23 @@
         <property name="allowCustomIsolationLevels" value="true"/>   
     </bean>  
   
-  
 	<tx:advice id="txAdvice" transaction-manager="jtaTransactionManager">
 		<tx:attributes>
-			<tx:method name="save*" propagation="REQUIRED" />
-			<tx:method name="add*" propagation="REQUIRED" />
-			<tx:method name="update*" propagation="REQUIRED" />
-			<tx:method name="edit*" propagation="REQUIRED" />
-			<tx:method name="del*" propagation="REQUIRED" />
-			<tx:method name="remove*" propagation="REQUIRED" />
-			<tx:method name="*" read-only="true" />
+			<tx:method name="save*" propagation="REQUIRED"   rollback-for="java.lang.Exception"/>
+			<tx:method name="add*" propagation="REQUIRED"  rollback-for="java.lang.Exception"/>
+			<tx:method name="update*" propagation="REQUIRED"  rollback-for="java.lang.Exception" />
+			<tx:method name="edit*" propagation="REQUIRED"  rollback-for="java.lang.Exception"/>
+			<tx:method name="del*" propagation="REQUIRED"  rollback-for="java.lang.Exception" />
+			<tx:method name="remove*" propagation="REQUIRED"  rollback-for="java.lang.Exception" />
+			<tx:method name="*"  read-only="true" />
 		</tx:attributes>
 	</tx:advice>
 	
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
-	<aop:config> 
-		<aop:pointcut expression="execution(* com.huotu.dataSource1.**.service.impl.*.*(..))" id="dataSource1-tx" />
-	    <aop:pointcut expression="execution(* com.huotu.dataSource2.**.service.impl.*.*(..))" id="dataSource2-tx"/>  
-	    <aop:pointcut expression="execution(* com.huotu.dataSource3.**.service.impl.*.*(..))" id="dataSource3-tx"/>
+	<aop:config  proxy-target-class="true"> 
+		<aop:pointcut expression="execution(* com.huotu.dataSource1.service.impl.*.*(..))" id="dataSource1-tx" />
+	    <aop:pointcut expression="execution(* com.huotu.dataSource2.service.impl.*.*(..))" id="dataSource2-tx"/>  
+	    <aop:pointcut expression="execution(* com.huotu.dataSource3.service.impl.*.*(..))" id="dataSource3-tx"/>
 	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource1-tx"  id="advisor1"/>
 	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource2-tx"  id="advisor2"/>  
 	    <aop:advisor advice-ref="txAdvice" pointcut-ref="dataSource3-tx"  id="advisor3"/>   

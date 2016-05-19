@@ -1,7 +1,5 @@
 package com.huotu.dataSource1.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import com.huotu.dataSource1.dao.Dao;
@@ -13,16 +11,19 @@ import com.huotu.entity.data2.Demo;
 @org.springframework.stereotype.Service
 public class ServiceImpl implements Service{
 	@Resource
-	private Dao<Data1> dao;
+	private Dao dao;
 	@Resource
-	private Dao2<Demo> dao2;
+	private Dao2 dao2;
 	@Resource
 	private DaoMapper daoMapper;
-	public List<Data1> findById(int id) {
-		return daoMapper.findById();
+	public Data1 findById(int id) {
+		return dao.findOne(id);
 	}
 	public void save(Data1 val) {
 		dao.save(val);
+	}
+	public void upadte(String name,int id) {
+		dao.update(name, id);
 	}
 	public void save(Data1 val,Demo demo) {
 		dao.save(val);

@@ -7,5 +7,5 @@ import com.huotu.entity.data2.Demo;
 public interface Service2 {
 
 	public void save(Demo demo);
-	public List<Demo> findById(int id );
+	public Demo findById(int id );
 }

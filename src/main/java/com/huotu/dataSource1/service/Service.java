@@ -8,5 +8,6 @@ import com.huotu.entity.data2.Demo;
 public interface Service {
 	public void save(Data1 data1);
 	public void save(Data1 val,Demo demo);
-	public List<Data1> findById(int id );
+	public Data1 findById(int id );
+	public void upadte(String name,int id);
 }

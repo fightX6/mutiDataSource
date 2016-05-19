@@ -2,6 +2,8 @@ package com.huotu;
 
 import javax.annotation.Resource;
 
+import org.hibernate.engine.transaction.internal.jta.JtaTransactionFactory;
+import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,15 +29,20 @@ public class TestController {
 	public Object index(Model model){
 		Data1 data1 = new  Data1();
 		Demo demo = new Demo();
-		data1.setName("data1");
-		service.save(data1);
+		data1.setName("data1data1data1data1data1data1data1data1data1");
+		//service.save(data1);
+		service.upadte("data1data1data1data1data1data1data1data1data1", 1);
+		//System.out.println(service.findById(1).getName());
+		/*// 
 		demo.setName("demo");
 		demo.setValue("demo_value"); 
-		data1.setName("data22222222");
-		service.save(data1, demo);
-		Value val = new Value();
-		val.setValue("value_value");
-		service3.save(val);
+		service2.save(demo);
+		data1.setName("data22222222"); 
+		//service.save(data1, demo);
+		Value val = new Value(); 
+		val.setValue("value_value");   
+		service3.save(val);*/
+		model.addAttribute("data1", service.findById(1));
 		return "index";
 	}
 }
